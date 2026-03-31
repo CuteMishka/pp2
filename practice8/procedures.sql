@@ -16,26 +16,19 @@ BEGIN
     WHERE first_name = p_identifier OR phone = p_identifier;
 END;
 $$;
-
-CREATE OR REPLACE PROCEDURE bulk_insert_with_validation(
-    p_fnames VARCHAR[], 
-    p_lnames VARCHAR[], 
-    p_phones VARCHAR[],
-    OUT p_errors TEXT[]
+CREATE OR REPLACE PROCEDURE bulk_insert_simple(
+    p_fnames VARCHAR[],
+    p_lnames VARCHAR[],
+    p_phones VARCHAR[]
 )
 LANGUAGE plpgsql AS $$
 DECLARE
     i INT;
 BEGIN
-    p_errors := '{}';
     FOR i IN 1 .. array_upper(p_fnames, 1) LOOP
-        IF p_phones[i] ~ '^(\+7|8)[0-9]{10}$' THEN
-            INSERT INTO phonebook(first_name, last_name, phone) 
-            VALUES(p_fnames[i], p_lnames[i], p_phones[i])
-            ON CONFLICT (phone) DO NOTHING;
-        ELSE
-            p_errors := array_append(p_errors, p_fnames[i] || ' (invalid phone: ' || p_phones[i] || ')');
-        END IF;
+        INSERT INTO phonebook(first_name, last_name, phone)
+        VALUES (p_fnames[i], p_lnames[i], p_phones[i])
+        ON CONFLICT (phone) DO NOTHING;
     END LOOP;
 END;
 $$;
