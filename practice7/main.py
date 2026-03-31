@@ -82,7 +82,8 @@ if __name__ == "__main__":
     #insert_from_csv('data.csv')
     insert_from_console()
     # update_contact('87010001122', 'Dmitry')
-    query_data('Ivan')
+    query_data('Азамат')
     # delete_by_name_or_phone('Alice')
     
-    query_data() # Показать все записи
+    query_data()
+    #docker run --name postgres-db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
