@@ -55,11 +55,23 @@ def bulk_insert_test():
                 print("Ошибки вставки:", errors)
         conn.commit()
 
+def get_contacts_by_pattern(pattern):
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM get_contacts_by_pattern(%s)", (pattern,))
+            rows = cur.fetchall()
+            print(rows)
+            return rows
+
+def delete_contact_proc(identifier):
+    delete_by_name_or_phone(identifier)
+
 if __name__ == "__main__":
-    # insert_from_console()
+    #insert_from_console()
     bulk_insert_test()
-    query_data('8707') # Поиск по части телефона
-    
+    query_data('8707')
+    get_contacts_by_pattern('Aleksey')
+    delete_contact_proc('')
     print("\nПагинация (первые 2 записи):")
     for contact in get_paginated(2, 0):
         print(contact)
